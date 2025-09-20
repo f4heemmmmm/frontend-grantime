@@ -104,6 +104,15 @@ const formatDate = (dateString) => {
     });
 };
 
+const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+};
+
 export default function Home() {
     const [messages, setMessages] = useState([
         {
@@ -379,7 +388,7 @@ export default function Home() {
                                             <div> {message.content}</div>
                                         )}
                                         <div className = "text-xs opacity-70 mt-2">
-                                            {message.timestamp.toLocaleTimeString()}
+                                            {formatTime(message.timestamp)}
                                         </div>
                                     </div>
                                 </div>
