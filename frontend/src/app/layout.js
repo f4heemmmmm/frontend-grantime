@@ -1,7 +1,6 @@
-import { Geist, Geist_Mono, DM_Sans } from "next/font/google";
-
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./navbar";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -9,11 +8,6 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
   subsets: ["latin"],
 });
 
@@ -26,12 +20,9 @@ export default function RootLayout({ children, params }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} antialiased font-[var(--font-dm-sans)]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex min-h-[100vh]">
-          <Navbar />
-          <div className="flex-1">{children}</div>
-        </div>
+        {children}
       </body>
     </html>
   );
