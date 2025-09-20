@@ -109,9 +109,9 @@ export default function ChatBot({
                                   {citation.clickable && (
                                     <button
                                       className="hover:cursor-pointer text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded border border-blue-200 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      onClick={() =>
-                                        alert(`Opening ${citation.source}...`)
-                                      }
+                                      onClick={() => {
+                                            window.open('/grant-agreement.pdf', '_blank');
+                                        }}
                                       aria-label={`View agreement for ${citation.source}`}
                                     >
                                       View Agreement
@@ -215,17 +215,15 @@ export default function ChatBot({
                                           {citation.section}
                                         </div>
                                         {citation.clickable && (
-                                          <button
-                                            className="text-green-600 hover:cursor-pointer hover:text-green-800 text-xs font-medium px-2 py-1 rounded border border-green-200 hover:bg-green-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
-                                            onClick={() =>
-                                              alert(
-                                                `Opening ${citation.source}...`
-                                              )
-                                            }
-                                            aria-label={`View agreement for ${citation.source}`}
-                                          >
-                                            View Agreement
-                                          </button>
+                                            <button
+                                                className="text-green-600 hover:cursor-pointer hover:text-green-800 text-xs font-medium px-2 py-1 rounded border border-green-200 hover:bg-green-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                                                onClick={() => {
+                                                    window.open('/grant-agreement.pdf', '_blank');
+                                                }}
+                                                aria-label={`View agreement for ${citation.source}`}
+                                            >
+                                                View Agreement
+                                            </button>
                                         )}
                                       </div>
                                     </div>
