@@ -39,7 +39,7 @@ export function PieChartRestricted() {
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend
           content={<ChartLegendContent nameKey="fund" />}
-          className="-translate-y-2 flex-wrap gap-2 *:basis-1/2 *:justify-center"
+          className="flex gap-6"
         />
       </PieChart>
     </ChartContainer>
