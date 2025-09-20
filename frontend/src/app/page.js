@@ -8,6 +8,7 @@ import { mockGrantCompanies, mockExportableFiles } from "./mockGrantData";
 import { mockResponse } from "./mockResponse";
 import PageHeader from "./header";
 import ChatBot from "./ChatBot";
+import { mockResponse2 } from "./mockResponse2";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -15,11 +16,12 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "700"],
 });
 
-// Mock AI Response Generator
+
 function generateMockResponse(query, amount) {
   const queryLower = query.toLowerCase();
   const requestedAmount = amount || 0;
 
+  // Existing healthcare foundation shelter check
   if (
     queryLower.includes(
       "can i use $15000 from healthcare foundation to set up shelters"
@@ -31,11 +33,25 @@ function generateMockResponse(query, amount) {
     return mockResponse;
   }
 
+  // New R&D substance abuse check
+  if (
+    queryLower.includes("from who can i use $3000 for research and development for substance abusers") ||
+    (queryLower.includes("research") &&
+     queryLower.includes("development") &&
+     queryLower.includes("substance") &&
+     requestedAmount === 3000) ||
+    (queryLower.includes("r&d") &&
+     queryLower.includes("substance") &&
+     requestedAmount === 3000)
+  ) {
+    return mockResponse2;
+  }
+
   return {
     decision: "UNKNOWN",
     confidence: 0,
     reasoning:
-      "Please ask about using $15000 from Healthcare Foundation to set up shelters to see the demo response.",
+      "Please ask about using $15000 from Healthcare Foundation to set up shelters or $3000 for research and development for substance abusers to see the demo responses.",
     fundSource: null,
     citations: [],
     alternatives: [],
