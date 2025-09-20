@@ -209,7 +209,7 @@ export default function Home() {
                                 <h2 className = "text-xl font-bold text-gray-900 mb-4">Grant Agreements</h2>
                                 <div className = "space-y-3">
                                     {mockExportableFiles.map((file) => (
-                                        <div key = {file.id} className = "flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors">
+                                        <div key = {file.id} className = "flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                             <div className = "flex items-center space-x-3 gap-2">
                                                 <div className = "w-8 h-8 bg-red-100 rounded flex items-center justify-center">
                                                     <span className = "text-red-600 text-xs font-bold">PDF</span>
