@@ -24,7 +24,8 @@ export const mockResponse = {
                     section: "Section 2.3 - Emergency Housing Provisions",
                     clickable: true
                 }
-            ]
+            ],
+            showSubmitRequestButton: true
         },
         {
             donor: "Community Support Fund", 
@@ -38,12 +39,13 @@ export const mockResponse = {
                     section: "Section 4.1 - Housing and Shelter Programs",
                     clickable: true
                 }
-            ]
+            ],
+            showSubmitRequestButton: true
         }
     ],
     processingNote: "Emergency Relief Grant funds can be accessed immediately upon submission of Form ER-401. Community Support Fund requires 48-hour approval process.",
-    allowedUses: "Healthcare Foundation funds CAN be used for:\n• Emergency medical supplies\n• Healthcare equipment\n• Medical training programs\n• Patient care services\n• Health education initiatives",
-    prohibitedUses: "Healthcare Foundation funds CANNOT be used for:\n• Shelter operations\n• Utilities\n• Facility maintenance\n• Construction\n• Administrative salaries\n• Office supplies\n• Any non-medical emergency response activities",
+    allowedUses: "Healthcare Foundation funds CAN be used for:\n•    Emergency medical supplies\n•     Healthcare equipment\n•     Medical training programs\n•     Patient care services\n•     Health education initiatives",
+    prohibitedUses: "Healthcare Foundation funds CANNOT be used for:\n•     Shelter operations\n•     Utilities\n•     Facility maintenance\n•     Construction\n•     Administrative salaries\n•     Office supplies\n•     Any non-medical emergency response activities",
     showChangeAgreementButton: true,
     showSubmitRequestButton: false
 };
