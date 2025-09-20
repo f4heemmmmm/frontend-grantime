@@ -3,6 +3,7 @@
 import Head from "next/head";
 import { DM_Sans } from "next/font/google";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { mockGrantCompanies, mockExportableFiles } from "./mockGrantData";
 import { mockResponse } from "./mockResponse";
 import PageHeader from "./header";
@@ -166,9 +167,17 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
             <div className="space-y-6">
               <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                  Grant Partners
-                </h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Grant Partners
+                  </h2>
+                  <Link 
+                    href="/trackonomics#grants-section"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
+                    View All Grants
+                  </Link>
+                </div>
                 <div className="space-y-4">
                   {mockGrantCompanies.map((grant) => {
                     const usedPercentage = (grant.used / grant.amount) * 100;

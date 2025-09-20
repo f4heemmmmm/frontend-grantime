@@ -95,8 +95,8 @@ const page = () => {
           </div>
         </div>
 
-        {/* Grant Funds List */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-6 max-w-[1460px] mx-auto">
+        {/* Grant Funds List - Added id for anchor scrolling */}
+        <div id="grants-section" className="bg-white rounded-lg shadow-sm border border-gray-300 p-6 max-w-[1460px] mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6">
             All Grant Funds
           </h2>
