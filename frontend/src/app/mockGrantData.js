@@ -3,6 +3,7 @@ export const mockGrantCompanies = [
     id: 1,
     company: "Healthcare Foundation",
     amount: 150000,
+    used: 105000,
     date: "2024-03-15",
     status: "Active"
   },
@@ -10,6 +11,7 @@ export const mockGrantCompanies = [
     id: 2,
     company: "Community Support Fund",
     amount: 75000,
+    used: 47000,
     date: "2024-01-22",
     status: "Active"
   },
@@ -17,6 +19,7 @@ export const mockGrantCompanies = [
     id: 3,
     company: "Emergency Relief Grant",
     amount: 200000,
+    used: 125000,
     date: "2023-11-08",
     status: "Active"
   },
@@ -24,6 +27,7 @@ export const mockGrantCompanies = [
     id: 4,
     company: "General Operations Fund",
     amount: 100000,
+    used: 40000,
     date: "2024-02-10",
     status: "Active"
   },
