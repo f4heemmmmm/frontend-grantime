@@ -17,113 +17,98 @@ function generateMockResponse(query, amount) {
   const queryLower = query.toLowerCase();
   const requestedAmount = amount || 0;
 
-  // Special case for the demo scenario
-  if (
-    queryLower.includes("emergency shelter") &&
-    queryLower.includes("donor a") &&
-    requestedAmount === 15000
-  ) {
-    return {
-      decision: "NO",
-      confidence: 95,
-      reasoning: `Emergency shelter utilities are not permitted under Donor A's grant restrictions. According to Grant Agreement HCF-2024-089, Section 3.2, Donor A funds are restricted to "emergency medical supplies only" and explicitly prohibit utility payments and shelter operations.`,
-      fundSource: null,
-      citations: [
-        "Grant Agreement HCF-2024-089, Section 3.2: 'Funds shall be used exclusively for emergency medical supplies and equipment'",
-        "Grant Agreement HCF-2024-089, Section 4.1: 'Prohibited uses include but are not limited to: utilities, rent, shelter operations, and administrative costs'",
-        "Donor A Compliance Manual, Page 12: 'All expenditures must directly support medical emergency response activities'",
-      ],
-      alternatives: [
-        {
-          donor: "Emergency Relief Grant",
-          available: 75000,
-          amount: 200000,
-          note: "Specifically allows emergency shelter and utilities - Grant Agreement ERG-2023-156, Section 2.3",
-        },
-        {
-          donor: "Community Support Fund",
-          available: 28000,
-          amount: 75000,
-          note: "Covers housing and shelter programs with up to 10% for utilities - Agreement CSF-2024-022",
-        },
-      ],
-      processingNote:
-        "Immediate approval available for Emergency Relief Grant funds upon submission of Form ER-401",
-    };
-  }
-
-  const matchingFunds = mockGrantAgreements.filter((grant) => {
-    return (
-      grant.allowedCategories.some((category) =>
-        queryLower.includes(category.toLowerCase())
-      ) && grant.available >= requestedAmount
-    );
-  });
-
-  const prohibitedFunds = mockGrantAgreements.filter((grant) => {
-    return grant.prohibitedCategories.some((category) =>
-      queryLower.includes(category.toLowerCase())
-    );
-  });
-
-  if (matchingFunds.length > 0 && prohibitedFunds.length === 0) {
-    const bestMatch = matchingFunds.sort(
-      (a, b) => b.available - a.available
-    )[0];
-    return {
-      decision: "YES",
-      confidence: Math.floor(Math.random() * 15) + 85,
-      reasoning: `This expense is compliant and can be funded from the ${bestMatch.donor}.`,
-      fundSource: bestMatch,
-      citations: bestMatch.restrictions,
-      alternatives: [],
-    };
-  } else if (matchingFunds.length === 0) {
-    const alternatives = mockGrantAgreements.filter(
-      (grant) =>
-        grant.available >= requestedAmount &&
-        grant.prohibitedCategories.length === 0
-    );
+    if (queryLower.includes("can i use $15000 from healthcare foundation to set up shelters") || 
+        (queryLower.includes("healthcare foundation") && queryLower.includes("shelter") && requestedAmount === 15000)) {
+        return {
+            decision: "NO",
+            confidence: 95,
+            reasoning: `Shelter setup and operations are not permitted under Healthcare Foundation's grant restrictions. The Healthcare Foundation grant agreement specifically limits funding to medical supplies and healthcare services only.`,
+            fundSource: null,
+            citations: [
+                {
+                    text: "Grantee funds shall be used exclusively for educational programming and direct client services as defined in Exhibit A. Emergency facility operations, including but not limited to utilities, maintenance, and crisis response activities, are specifically excluded from allowable expenses under this agreement.",
+                    source: "Grant Agreement HCF-2024-089",
+                    section: "Section 3.2 - Allowable Expenses",
+                    clickable: true
+                }
+            ],
+            alternatives: [
+                {
+                    donor: "Emergency Relief Grant",
+                    available: 75000,
+                    amount: 200000,
+                    reasoning: "This grant specifically covers emergency shelter operations and setup costs.",
+                    citations: [
+                        {
+                            text: "Funds may be utilized for emergency shelter establishment, including temporary housing setup, basic utilities connection, and emergency accommodation services for displaced individuals during crisis periods.",
+                            source: "Grant Agreement ERG-2023-156",
+                            section: "Section 2.3 - Emergency Housing Provisions",
+                            clickable: true
+                        }
+                    ]
+                },
+                {
+                    donor: "Community Support Fund", 
+                    available: 28000,
+                    amount: 75000,
+                    reasoning: "Covers housing and shelter programs with specific provisions for emergency shelter setup.",
+                    citations: [
+                        {
+                            text: "Grant recipients are authorized to establish temporary and emergency shelters, including facility preparation, basic infrastructure setup, and operational costs not exceeding reasonable community standards for emergency housing.",
+                            source: "Grant Agreement CSF-2024-022",
+                            section: "Section 4.1 - Housing and Shelter Programs",
+                            clickable: true
+                        }
+                    ]
+                }
+            ],
+            processingNote: "Emergency Relief Grant funds can be accessed immediately upon submission of Form ER-401. Community Support Fund requires 48-hour approval process.",
+            allowedUses: "Healthcare Foundation funds CAN be used for:\n• Emergency medical supplies\n• Healthcare equipment\n• Medical training programs\n• Patient care services\n• Health education initiatives",
+            prohibitedUses: "Healthcare Foundation funds CANNOT be used for:\n• Shelter operations\n• Utilities\n• Facility maintenance\n• Construction\n• Administrative salaries\n• Office supplies\n• Any non-medical emergency response activities",
+            showChangeAgreementButton: true,
+            showSubmitRequestButton: false
+        };
+    }
 
     return {
-      decision: "NO",
-      confidence: Math.floor(Math.random() * 10) + 90,
-      reasoning: `No funding sources found that specifically allow this type of expense with sufficient funds.`,
-      fundSource: null,
-      citations:
-        prohibitedFunds.length > 0 ? prohibitedFunds[0].restrictions : [],
-      alternatives: alternatives.slice(0, 2),
-    };
-  } else {
-    return {
-      decision: "CONDITIONAL",
-      confidence: Math.floor(Math.random() * 20) + 70,
-      reasoning: `Some restrictions apply. Manual review recommended.`,
-      fundSource: matchingFunds[0],
-      citations: prohibitedFunds[0]?.restrictions || [],
-      alternatives: matchingFunds.slice(1, 3),
+        decision: "UNKNOWN",
+        confidence: 0,
+        reasoning: "Please ask about using $15000 from Healthcare Foundation to set up shelters to see the demo response.",
+        fundSource: null,
+        citations: [],
+        alternatives: [],
+        showChangeAgreementButton: false,
+        showSubmitRequestButton: false
     };
   }
 }
 
 const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+};
+
+const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
 };
 
 export default function Home() {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "Hello! I'm your AI Compliance Assistant. I can help you check if expenses are compliant with your donor restrictions. Try asking something like: 'Can we spend $5000 on emergency medical supplies?' or 'Is $2000 for office rent allowed?'",
-      timestamp: new Date(),
-    },
-  ]);
+    const [messages, setMessages] = useState([
+        {
+            role: "assistant",
+            content: "Hello! I'm your Grantime, your AI Compliance Assistant. What do you need help with today?",
+            timestamp: new Date('2024-01-01T12:00:00')
+        }
+    ]);
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -168,10 +153,10 @@ export default function Home() {
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 10000 + Math.random() * 2000);
-  };
+            setMessages(prev => [...prev, assistantMessage]);
+            setIsLoading(false);
+        }, 1000 + Math.random() * 2000);
+    };
 
   const handleLogout = () => {
     // Fake logout function - just show an alert
@@ -251,48 +236,70 @@ export default function Home() {
           </div>
         </header>
 
-        {/* DASHBOARD SECTIONS */}
-        <div className="max-w-3/4 mx-auto w-full p-10 flex-1">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-            {/* Left Column - Grant Info Sections */}
-            <div className="space-y-6">
-              {/* Grant Companies Section */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                  Grant Partners
-                </h2>
-                <div className="space-y-4">
-                  {mockGrantCompanies.map((grant) => (
-                    <div
-                      key={grant.id}
-                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
-                    >
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          {grant.company}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          Granted: {formatDate(grant.date)}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-green-600">
-                          {formatCurrency(grant.amount)}
-                        </div>
-                        <div
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            grant.status === "Active"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {grant.status}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                {/* DASHBOARD SECTIONS */}
+                <div className="max-w-3/4 mx-auto w-full p-10 flex-1">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+                        {/* Left Column - Grant Info Sections */}
+                        <div className="space-y-6">
+                            {/* Grant Companies Section */}
+                            <div className="bg-white rounded-lg shadow-sm border p-6">
+                                <h2 className="text-xl font-bold text-gray-900 mb-4">Grant Partners</h2>
+                                <div className="space-y-4">
+                                    {mockGrantCompanies.map((grant) => {
+                                        const usedPercentage = (grant.used / grant.amount) * 100;
+                                        const remaining = grant.amount - grant.used;
+                                        
+                                        return (
+                                            <div key={grant.id} className="p-4 bg-gray-50 rounded-lg">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <div className="font-medium text-gray-900">{grant.company}</div>
+                                                        <div className="text-sm text-gray-600">
+                                                            Granted: {formatDate(grant.date)}
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="font-bold text-green-600">
+                                                            {formatCurrency(grant.amount)}
+                                                        </div>
+                                                        <div className={`text-xs px-2 py-1 rounded-full ${
+                                                            grant.status === 'Active' 
+                                                                ? 'bg-green-100 text-green-800' 
+                                                                : 'bg-gray-100 text-gray-800'
+                                                        }`}>
+                                                            {grant.status}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Usage Information */}
+                                                <div className="space-y-2">
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-gray-600">
+                                                            Used: {formatCurrency(grant.used)} of {formatCurrency(grant.amount)}
+                                                        </span>
+                                                        <span className="text-gray-600">
+                                                            Remaining: {formatCurrency(remaining)}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    {/* Progress Bar */}
+                                                    <div className="w-full bg-gray-200 rounded-full h-3">
+                                                        <div 
+                                                            className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                                                            style={{ width: `${usedPercentage}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    
+                                                    <div className="text-xs text-gray-500 text-center">
+                                                        {usedPercentage.toFixed(1)}% used
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
 
               {/* Exportable Files Section */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
@@ -332,37 +339,30 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Column - Chatbot Section */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col">
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${
-                      message.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-3xl ${
-                        message.role === "user"
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-900"
-                      } rounded-lg px-4 py-3`}
-                    >
-                      {message.role === "assistant" &&
-                      typeof message.content === "object" ? (
-                        <div className="space-y-4">
-                          <div
-                            className={`text-lg font-bold ${getDecisionColor(
-                              message.content.decision
-                            )}`}
-                          >
-                            Decision: {message.content.decision}
-                          </div>
-
-                          <div className="text-sm text-gray-600">
-                            Confidence: {message.content.confidence}%
-                          </div>
+                        {/* Right Column - Chatbot Section */}
+                        <div className="bg-white rounded-lg shadow-sm border h-[900px] flex flex-col">
+                            <div className = "flex-1 overflow-y-auto p-6 space-y-6">
+                                {messages.map((message, index) => (
+                                <div
+                                    key = {index}
+                                    className = {`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                                >
+                                    <div
+                                        className = {`max-w-3xl ${
+                                        message.role === "user"
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-gray-100 text-gray-900"
+                                        } rounded-lg px-4 py-3`}
+                                    >
+                                        {message.role === "assistant" && typeof message.content === "object" ? (
+                                            <div className = "space-y-4">
+                                                <div className = {`text-lg font-bold ${getDecisionColor(message.content.decision)}`}>
+                                                Decision: {message.content.decision}
+                                                </div>
+                                                
+                                                <div className = "text-sm text-gray-600">
+                                                Confidence: {message.content.confidence}%
+                                                </div>
 
                           <div className="text-gray-800">
                             <strong>Reasoning:</strong>{" "}
@@ -391,71 +391,150 @@ export default function Home() {
                             </div>
                           )}
 
-                          {message.content.citations.length > 0 && (
-                            <div className="bg-yellow-50 p-3 rounded">
-                              <strong>Relevant Restrictions:</strong>
-                              <ul className="mt-1 text-sm space-y-1">
-                                {message.content.citations.map(
-                                  (citation, idx) => (
-                                    <li key={idx} className="flex items-start">
-                                      <span className="text-yellow-600 mr-2">
-                                        •
-                                      </span>
-                                      {citation}
-                                    </li>
-                                  )
-                                )}
-                              </ul>
-                            </div>
-                          )}
+                                                {message.content.citations && message.content.citations.length > 0 && (
+                                                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                                                    <strong className="text-red-800 text-sm">Relevant Grant Agreement Restrictions:</strong>
+                                                    <div className="mt-3 space-y-3">
+                                                        {message.content.citations.map((citation, idx) => (
+                                                            <div key={idx} className="bg-white p-3 rounded border border-red-100">
+                                                                <div className="text-sm text-gray-800 mb-2 leading-relaxed">
+                                                                    &quot;{citation.text || citation}&quot;
+                                                                </div>
+                                                                {citation.source && (
+                                                                    <div className="flex items-center justify-between">
+                                                                        <div className="text-xs text-gray-600">
+                                                                            <strong>{citation.source}</strong> - {citation.section}
+                                                                        </div>
+                                                                        {citation.clickable && (
+                                                                            <button 
+                                                                                className="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded border border-blue-200 hover:bg-blue-50 transition-colors"
+                                                                                onClick={() => alert(`Opening ${citation.source}...`)}
+                                                                            >
+                                                                                View Agreement
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                )}
 
-                          {message.content.alternatives.length > 0 && (
-                            <div className="bg-green-50 p-3 rounded">
-                              <strong> Alternative Funding Sources: </strong>
-                              <div className="mt-2 space-y-2">
-                                {message.content.alternatives.map(
-                                  (alt, idx) => (
-                                    <div key={idx} className="text-sm">
-                                      <div className="font-medium">
-                                        {" "}
-                                        {alt.donor}{" "}
-                                      </div>
-                                      <div className="text-gray-600">
-                                        Available:{" "}
-                                        {formatCurrency(alt.available)}
-                                        {alt.note && (
-                                          <div className="text-xs mt-1 italic">
-                                            {alt.note}
-                                          </div>
+                                                {(message.content.allowedUses || message.content.prohibitedUses) && (
+                                                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                    <strong className="text-gray-800 text-sm">Fund Usage Summary:</strong>
+                                                    <div className="mt-3 space-y-3">
+                                                        {message.content.allowedUses && (
+                                                            <div className="bg-green-50 p-3 rounded border border-green-200">
+                                                                <div className="text-sm text-green-800 font-medium mb-1">✓ Allowed Uses:</div>
+                                                                <div className="text-sm text-gray-700 whitespace-pre-line">{message.content.allowedUses}</div>
+                                                            </div>
+                                                        )}
+                                                        {message.content.prohibitedUses && (
+                                                            <div className="bg-red-50 p-3 rounded border border-red-200">
+                                                                <div className="text-sm text-red-800 font-medium mb-1">✗ Prohibited Uses:</div>
+                                                                <div className="text-sm text-gray-700 whitespace-pre-line">{message.content.prohibitedUses}</div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                )}
+
+                                                {message.content.alternatives && message.content.alternatives.length > 0 && (
+                                                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                                                    <strong className="text-green-800 text-sm">Alternative Funding Sources:</strong>
+                                                    <div className="mt-3 space-y-4">
+                                                        {message.content.alternatives.map((alt, idx) => (
+                                                            <div key={idx} className="bg-white p-4 rounded-lg border border-green-100">
+                                                                <div className="flex justify-between items-start mb-3">
+                                                                    <div>
+                                                                        <div className="font-medium text-gray-900 text-lg">{alt.donor}</div>
+                                                                        <div className="text-sm text-gray-600 mt-1">
+                                                                            Available: <span className="font-semibold text-green-600">{formatCurrency(alt.available)}</span> of {formatCurrency(alt.amount)}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                {alt.reasoning && (
+                                                                    <div className="text-sm text-gray-700 mb-3">
+                                                                        <strong>Why this works:</strong> {alt.reasoning}
+                                                                    </div>
+                                                                )}
+
+                                                                {alt.citations && alt.citations.length > 0 && (
+                                                                    <div className="space-y-2">
+                                                                        <div className="text-xs font-medium text-green-700">Supporting Grant Agreement:</div>
+                                                                        {alt.citations.map((citation, citIdx) => (
+                                                                            <div key={citIdx} className="bg-green-25 p-3 rounded border border-green-150">
+                                                                                <div className="text-sm text-gray-800 italic mb-2">
+                                                                                    &quot;{citation.text}&quot;
+                                                                                </div>
+                                                                                <div className="flex items-center justify-between">
+                                                                                    <div className="text-xs text-gray-600">
+                                                                                        <strong>{citation.source}</strong> - {citation.section}
+                                                                                    </div>
+                                                                                    {citation.clickable && (
+                                                                                        <button 
+                                                                                            className="text-green-600 hover:text-green-800 text-xs font-medium px-2 py-1 rounded border border-green-200 hover:bg-green-50 transition-colors"
+                                                                                            onClick={() => alert(`Opening ${citation.source}...`)}
+                                                                                        >
+                                                                                            View Agreement
+                                                                                        </button>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+
+                                                                {alt.note && !alt.citations && (
+                                                                    <div className="text-xs text-gray-600 mt-2 italic">{alt.note}</div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                )}
+
+                                                {message.content.processingNote && (
+                                                <div className = "bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+                                                    <strong className="text-blue-800">Processing Note:</strong>
+                                                    <div className = "text-sm text-blue-700 mt-1">{message.content.processingNote}</div>
+                                                </div>
+                                                )}
+
+                                                {message.content.showChangeAgreementButton && (
+                                                <div className="mt-4">
+                                                    <button 
+                                                        className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                                        onClick={() => alert("Request to change agreement submitted!")}
+                                                    >
+                                                        Submit Request to Change Agreement
+                                                    </button>
+                                                </div>
+                                                )}
+
+                                                {message.content.showSubmitRequestButton && (
+                                                <div className="mt-4">
+                                                    <button 
+                                                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                                        onClick={() => alert("Request submitted!")}
+                                                    >
+                                                        Submit Request
+                                                    </button>
+                                                </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div> {message.content}</div>
                                         )}
-                                      </div>
+                                        <div className = "text-xs opacity-70 mt-2">
+                                            {formatTime(message.timestamp)}
+                                        </div>
                                     </div>
-                                  )
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {message.content.processingNote && (
-                            <div className="bg-blue-50 p-3 rounded  border-l-4 border-blue-400">
-                              <strong className="text-blue-800">
-                                Processing Note:
-                              </strong>
-                              <div className="text-sm text-blue-700 mt-1">
-                                {message.content.processingNote}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div> {message.content}</div>
-                      )}
-                      <div className="text-xs opacity-70 mt-2">
-                        {message.timestamp.toLocaleTimeString()}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                                </div>
+                                ))}
 
                 {isLoading && (
                   <div className="flex justify-start">
