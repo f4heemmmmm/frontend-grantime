@@ -56,7 +56,7 @@ const page = () => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
               {/* Profile Circle with Initials */}
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
                 <span className="text-white font-semibold text-sm">JC</span>
               </div>
 
@@ -108,42 +108,41 @@ const page = () => {
                 const remaining = grant.amount - grant.used;
 
                 return (
-                  <div key={i} className="p-3 bg-gray-50 rounded-lg shadow">
-                    <div className="flex justify-between items-start mb-2">
+                  <div key={i} className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-start mb-3">
                       <div>
-                        <div className="font-medium text-gray-900 text-sm">
+                        <div className="font-semibold text-lg text-gray-900">
                           {grant.company}
                         </div>
-                        <div className="text-xs text-gray-600">
-                          Granted: {formatDate(grant.date)}
+                        <div className="text-sm text-gray-600">
+                          Granted On: {formatDate(grant.date)}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-bold text-green-600 text-sm">
+                        <div className="font-light text-2xl text-green-600">
                           {formatCurrency(grant.amount)}
-                        </div>
-                        <div
-                          className={`text-xs my-2 px-5 py-1 rounded-full inline-block ${
-                            grant.status === "Active"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {grant.status}
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-xs text-gray-600">
-                        <span>Used: {formatCurrency(grant.used)}</span>
-                        <span>Remaining: {formatCurrency(remaining)}</span>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">
+                          Used: {formatCurrency(grant.used)} of{" "}
+                          {formatCurrency(grant.amount)}
+                        </span>
+                        <span className="text-gray-600">
+                          Remaining: {formatCurrency(remaining)}
+                        </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+
+                      <div className="w-full bg-gray-200 rounded-full h-3">
                         <div
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-blue-600 h-3 rounded-full transition-all duration-300"
                           style={{ width: `${usedPercentage}%` }}
                         ></div>
                       </div>
+
                       <div className="text-xs text-gray-500 text-center">
                         {usedPercentage.toFixed(1)}% used
                       </div>
