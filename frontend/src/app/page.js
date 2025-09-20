@@ -10,9 +10,9 @@ import PageHeader from "./header";
 import ChatBot from "./ChatBot";
 
 const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+    variable: "--font-dm-sans",
+    subsets: ["latin"],
+    weight: ["400", "500", "700"],
 });
 
 // Mock AI Response Generator
@@ -26,72 +26,15 @@ function generateMockResponse(query, amount) {
     }
 
     return {
-      decision: "NO",
-      confidence: 95,
-      reasoning: `Shelter setup and operations are not permitted under Healthcare Foundation's grant restrictions. The Healthcare Foundation grant agreement specifically limits funding to medical supplies and healthcare services only.`,
-      fundSource: null,
-      citations: [
-        {
-          text: "Grantee funds shall be used exclusively for educational programming and direct client services as defined in Exhibit A. Emergency facility operations, including but not limited to utilities, maintenance, and crisis response activities, are specifically excluded from allowable expenses under this agreement.",
-          source: "Grant Agreement HCF-2024-089",
-          section: "Section 3.2 - Allowable Expenses",
-          clickable: true,
-        },
-      ],
-      alternatives: [
-        {
-          donor: "Emergency Relief Grant",
-          available: 75000,
-          amount: 200000,
-          reasoning:
-            "This grant specifically covers emergency shelter operations and setup costs.",
-          citations: [
-            {
-              text: "Funds may be utilized for emergency shelter establishment, including temporary housing setup, basic utilities connection, and emergency accommodation services for displaced individuals during crisis periods.",
-              source: "Grant Agreement ERG-2023-156",
-              section: "Section 2.3 - Emergency Housing Provisions",
-              clickable: true,
-            },
-          ],
-        },
-        {
-          donor: "Community Support Fund",
-          available: 28000,
-          amount: 75000,
-          reasoning:
-            "Covers housing and shelter programs with specific provisions for emergency shelter setup.",
-          citations: [
-            {
-              text: "Grant recipients are authorized to establish temporary and emergency shelters, including facility preparation, basic infrastructure setup, and operational costs not exceeding reasonable community standards for emergency housing.",
-              source: "Grant Agreement CSF-2024-022",
-              section: "Section 4.1 - Housing and Shelter Programs",
-              clickable: true,
-            },
-          ],
-        },
-      ],
-      processingNote:
-        "Emergency Relief Grant funds can be accessed immediately upon submission of Form ER-401. Community Support Fund requires 48-hour approval process.",
-      allowedUses:
-        "Healthcare Foundation funds CAN be used for:\n• Emergency medical supplies\n• Healthcare equipment\n• Medical training programs\n• Patient care services\n• Health education initiatives",
-      prohibitedUses:
-        "Healthcare Foundation funds CANNOT be used for:\n• Shelter operations\n• Utilities\n• Facility maintenance\n• Construction\n• Administrative salaries\n• Office supplies\n• Any non-medical emergency response activities",
-      showChangeAgreementButton: true,
-      showSubmitRequestButton: false,
+        decision: "UNKNOWN",
+        confidence: 0,
+        reasoning: "Please ask about using $15000 from Healthcare Foundation to set up shelters to see the demo response.",
+        fundSource: null,
+        citations: [],
+        alternatives: [],
+        showChangeAgreementButton: false,
+        showSubmitRequestButton: false
     };
-  }
-
-  return {
-    decision: "UNKNOWN",
-    confidence: 0,
-    reasoning:
-      "Please ask about using $15000 from Healthcare Foundation to set up shelters to see the demo response.",
-    fundSource: null,
-    citations: [],
-    alternatives: [],
-    showChangeAgreementButton: false,
-    showSubmitRequestButton: false,
-  };
 }
 
 const formatDate = (dateString) => {
@@ -121,10 +64,10 @@ export default function Home() {
         }
     ]);
 
-  const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+    const [inputValue, setInputValue] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-  const endOfMessagesRef = useRef(null);
+    const endOfMessagesRef = useRef(null);
 
     const scrollToBottom = () => {
         if (endOfMessagesRef.current) {
@@ -135,7 +78,42 @@ export default function Home() {
         }
     };
 
-  useEffect(scrollToBottom, [messages]);
+    useEffect(scrollToBottom, [messages]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!inputValue.trim()) {
+            return;
+        }
+
+        const userMessage = {
+            role: "user",
+            content: inputValue,
+            timestamp: new Date()
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setInputValue("");
+        setIsLoading(true);
+
+        const amountMatch = inputValue.match(/\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/);
+        const amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, "")) : 0;
+
+        // Simulate AI processing time
+        setTimeout(() => {
+            const mockResponse = generateMockResponse(inputValue, amount);
+            
+            const assistantMessage = {
+                role: "assistant",
+                content: mockResponse,
+                timestamp: new Date()
+            };
+
+            setMessages(prev => [...prev, assistantMessage]);
+            setIsLoading(false);
+        }, 1000 + Math.random() * 2000);
+    };
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("en-US", {
@@ -144,10 +122,17 @@ export default function Home() {
         }).format(amount);
     };
 
-    const userMessage = {
-      role: "user",
-      content: inputValue,
-      timestamp: new Date(),
+    const getDecisionColor = (decision) => {
+        switch (decision) {
+            case "YES":
+                return "text-green-600";
+            case "NO":
+                return "text-red-600";
+            case "CONDITIONAL":
+                return "text-yellow-600";
+            default:
+                return "text-gray-600";
+        }
     };
 
     return (
@@ -214,55 +199,9 @@ export default function Home() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {citation.clickable && (
-                                              <button
-                                                className="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded border border-blue-200 hover:bg-blue-50 transition-colors"
-                                                onClick={() =>
-                                                  alert(
-                                                    `Opening ${citation.source}...`
-                                                  )
-                                                }
-                                              >
-                                                View Agreement
-                                              </button>
-                                            )}
-                                          </div>
-                                        )}
-                                      </div>
-                                    )
-                                  )}
+                                        );
+                                    })}
                                 </div>
-                              </div>
-                            )}
-
-                          {(message.content.allowedUses ||
-                            message.content.prohibitedUses) && (
-                            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                              <strong className="text-gray-800 text-sm">
-                                Fund Usage Summary:
-                              </strong>
-                              <div className="mt-3 space-y-3">
-                                {message.content.allowedUses && (
-                                  <div className="bg-green-50 p-3 rounded border border-green-200">
-                                    <div className="text-sm text-green-800 font-medium mb-1">
-                                      ✓ Allowed Uses:
-                                    </div>
-                                    <div className="text-sm text-gray-700 whitespace-pre-line">
-                                      {message.content.allowedUses}
-                                    </div>
-                                  </div>
-                                )}
-                                {message.content.prohibitedUses && (
-                                  <div className="bg-red-50 p-3 rounded border border-red-200">
-                                    <div className="text-sm text-red-800 font-medium mb-1">
-                                      ✗ Prohibited Uses:
-                                    </div>
-                                    <div className="text-sm text-gray-700 whitespace-pre-line">
-                                      {message.content.prohibitedUses}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
                             </div>
 
                             {/* GRANT AGREEMENTS */}
@@ -286,6 +225,10 @@ export default function Home() {
                                                 View Agreement
                                             </button>
                                         </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
                         {/* CHATBOT */}
                         <ChatBot 
@@ -300,48 +243,8 @@ export default function Home() {
                             endOfMessagesRef = {endOfMessagesRef}
                         />
                     </div>
-                  </div>
-                ))}
-
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 rounded-lg px-4 py-3 max-w-3xl">
-                      <div className="flex items-center space-x-2">
-                        <div className="animate-spin rounded-full h-4 w-4  border-b-2 border-blue-600"></div>
-                        <span className="text-gray-600">
-                          Analyzing compliance...
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={endOfMessagesRef} />
-              </div>
-
-              {/* INPUT FORM */}
-              <div className="border-t border-gray-300 p-4">
-                <form onSubmit={handleSubmit} className="flex space-x-3">
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Ask about your expense compliance..."
-                    className="flex-1 border border-gray-300 text-black rounded-2xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="submit"
-                    disabled={isLoading || !inputValue.trim()}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg  hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Send
-                  </button>
-                </form>
-              </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+        </>
+    );
 }
