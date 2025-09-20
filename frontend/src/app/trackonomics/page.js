@@ -122,6 +122,15 @@ const page = () => {
                         <div className="font-bold text-green-600 text-sm">
                           {formatCurrency(grant.amount)}
                         </div>
+                        <div
+                          className={`text-xs my-2 px-5 py-1 rounded-full inline-block ${
+                            grant.status === "Active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {grant.status}
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-1.5">
