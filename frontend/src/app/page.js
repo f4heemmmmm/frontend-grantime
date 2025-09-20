@@ -165,21 +165,14 @@ export default function Home() {
                                             <div key = {grant.id} className = "p-4 bg-gray-50 rounded-lg">
                                                 <div className = "flex justify-between items-start mb-3">
                                                     <div>
-                                                        <div className = "font-medium text-gray-900">{grant.company}</div>
+                                                        <div className = "font-semibold text-lg text-gray-900">{grant.company}</div>
                                                         <div className = "text-sm text-gray-600">
-                                                            Granted: {formatDate(grant.date)}
+                                                            Granted On: {formatDate(grant.date)}
                                                         </div>
                                                     </div>
                                                     <div className = "text-right">
-                                                        <div className = "font-bold text-green-600">
+                                                        <div className = "font-light text-2xl text-green-600">
                                                             {formatCurrency(grant.amount)}
-                                                        </div>
-                                                        <div className = {`text-xs px-2 py-1 rounded-full ${
-                                                            grant.status === "Active" 
-                                                                ? "bg-green-100 text-green-800" 
-                                                                : "bg-gray-100 text-gray-800"
-                                                        }`}>
-                                                            {grant.status}
                                                         </div>
                                                     </div>
                                                 </div>
